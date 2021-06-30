@@ -36,11 +36,19 @@ export interface GenericChartsSelections {
     slots: {
         stepNumber: number,
         tabId: string,
-        charts: ChartSelections
+        charts: ChartSelections[]
 
-    }
+    }[]
 }
 
 export interface ChartSelections {
     dataSources: Record<string, string>
+}
+
+export interface DataSourcePayload {
+    step: number,
+    tabId: string,
+    chartIndex: number,
+    dataSourceId: string,
+    newValue: string
 }

@@ -3,7 +3,7 @@ import {Module} from "vuex";
 import {GenericChartsState} from "@/store/genericCharts/state";
 import {RootState} from "@/store/RootState";
 import {getters} from "./getters";
-import {GenericChartsConfig} from "@/types";
+import {mutations} from "./mutations";
 import {initialiseSelections} from "@/store/genericCharts/utils";
 
 export const genericChartsState:GenericChartsState = {
@@ -16,6 +16,7 @@ const namespaced = true;
 export const genericCharts: Module<GenericChartsState, RootState> = {
     namespaced,
     state: genericChartsState,
-    getters
+    getters,
+    mutations
 };
 
