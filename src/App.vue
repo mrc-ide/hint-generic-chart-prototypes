@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container">
     <ChartSlot :step="1" tab-id="timeSeries"></ChartSlot>
   </div>
 </template>
@@ -17,11 +17,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }

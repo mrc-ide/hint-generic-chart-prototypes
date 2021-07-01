@@ -5152,6 +5152,10 @@ export const artData = {
             {
                "id":"art_current",
                "label":"ART number (attending)"
+            },
+            {
+               "id":"art_new",
+               "label":"ART number (new)"
             }
          ]
       }

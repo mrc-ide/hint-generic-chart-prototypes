@@ -1,31 +1,34 @@
 import {GenericChartsState} from "@/store/genericCharts/state";
 import {RootState} from "@/store/RootState";
-import {ChartConfig, ChartSelections, DatasetConfig} from "@/types";
+import {ChartConfig, ChartData, ChartSelections, DatasetConfig, GenericChartsConfig} from "@/types";
+import {expandDatasetFilters, getChartDataForChart} from "@/store/genericCharts/utils";
 
 export const getters = {
-    // Returns a method which returns all the data for a chart given its current selections - return a dictionary
-    // where keys are dataset id and value is dataset
     chartData: (state: GenericChartsState, getters: any, rootState: RootState) => {
-        return (chartConfig: ChartConfig, chartSelections: ChartSelections) => {
-            let datasets = {} as any;
-            chartConfig.datasets.forEach((config: DatasetConfig) => {
-                if (config.type === "standard") {
-                    datasets[config.id] = (rootState as any)[config.module!][config.prop!];
-                } else {
-                    throw "not supported";
-                }
+        const result = {slots: []} as ChartData;
+        state.config.slots.forEach(slotConfig => {
+            const stepNumber = slotConfig.stepNumber;
+            const tabId = slotConfig.tabId;
+            const slotSelections = state.selections.slots.find(s => s.stepNumber === stepNumber && s.tabId === tabId);
+            const charts = (slotConfig.charts.map((c, index) => getChartDataForChart(state, rootState, c, slotSelections!.charts[index])));
+            result.slots.push({
+                stepNumber,
+                tabId,
+                charts
             });
-
-            // Remove unselected datasets
-            if (Object.keys(chartSelections.dataSources).length > 0) {
-                const selectedDatasets = {} as any;
-                Object.keys(chartSelections.dataSources).map(k => chartSelections.dataSources[k]).forEach(dsId => {
-                    selectedDatasets[dsId] = datasets[dsId];
+        });
+        return result;
+    },
+    expandedConfig: (state: GenericChartsState, getters: any, rootState:RootState) => {
+        const result = {...state.config};
+        result.slots.forEach(s => {
+            const charts = s.charts.map(c => {
+                const datasets = c.datasets.map((d: DatasetConfig) => {
+                    return {...d, filters: expandDatasetFilters(d, rootState)}
                 });
-                datasets = selectedDatasets;
-            }
-
-            return datasets;
-        };
+                return {...c, datasets}
+            });
+            s.charts = charts;
+        });
     }
 };

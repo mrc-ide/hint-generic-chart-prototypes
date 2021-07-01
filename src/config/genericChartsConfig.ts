@@ -7,10 +7,13 @@
 // If dataset type is "custom" then we need to fetch that data from a (new) endpoint, providing the 'name' as a parameters.
 
 // In dataSelectors, the first level of selection is dataSource - there may be one or more of these, and other data selectors
-// e..g filters are relative to a data source. A datasource may  be fixed to a particular dataset or editable if user
-// can select the dataset from a drop-down - in this case, datasetId is just the default
+// e..g filters are relative to a data source. DataSources represent how datasets are used in each chart - e.g  may have a single datasource,
+// or separate for x & y axis. A dataSource can be fixed or editable - if editable, user can select the dataset
+// to use for the data source, if fixed, the data source is fixed to the default dataset id.
 
-import {GenericChartsConfig} from "@/types";
+// Default options are not implemented in the prototype - first options are selected
+
+import {FilterOption, GenericChartsConfig} from "@/types";
 
 export const genericChartsSampleConfig : GenericChartsConfig = {
     slots: [
@@ -19,13 +22,24 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
             tabId: "timeSeries",
             charts: [
                 {
-                    datasets: [
+                    datasets: [ //Datasets are the available sets of data to the chart
                         {
                             id: "art",
                             type: "standard",
                             label: "ART",
                             module: "surveyAndProgram",
-                            prop: "program"
+                            prop: "program",
+                            //Filters are defined for the dataset not the datasource as they may differ across datasets
+                            filters: [
+                                {
+                                    id: "age",
+                                    column_id: "age_group",
+                                    label: "Age",
+                                    allowMultiple: false,
+                                    optionsSource: "data",
+                                    options: []
+                                }
+                            ]
                         },
                         {
                             id: "anc",
@@ -41,7 +55,9 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                 id: "data",
                                 type: "editable",
                                 label: "Data source",
-                                datasetId: "art"
+                                datasetId: "art",
+                                showIndicators: true,
+                                showFilters: true
                             }
                         ]
                     }
