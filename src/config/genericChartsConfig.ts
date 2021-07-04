@@ -36,7 +36,15 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                     column_id: "age_group",
                                     label: "Age",
                                     allowMultiple: false,
-                                    optionsSource: "data",
+                                    optionsSource: "data", // The options for this filter will be defined in the dataset, in the 'filters' property
+                                    options: []
+                                },
+                                {
+                                    id: "area",
+                                    column_id: "area_id",
+                                    label: "Area",
+                                    allowMultiple: true,
+                                    optionsSource: "shape", // The options for this filter will be defined by the areas in the Shape response in the baseline state
                                     options: []
                                 }
                             ]
@@ -46,7 +54,25 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             type: "standard",
                             label: "ANC",
                             module: "surveyAndProgram",
-                            prop: "anc"
+                            prop: "anc",
+                            filters: [
+                                {
+                                    id: "year",
+                                    column_id: "year",
+                                    label: "Year",
+                                    allowMultiple: false,
+                                    optionsSource: "data",
+                                    options: []
+                                },
+                                {
+                                    id: "area",
+                                    column_id: "area_id",
+                                    label: "Area",
+                                    allowMultiple: true,
+                                    optionsSource: "shape",
+                                    options: []
+                                }
+                            ]
                         }
                     ],
                     dataSelectors: {

@@ -18,11 +18,16 @@ export default Vue.extend({
 
 <style lang="scss">
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import "../node_modules/@riophae/vue-treeselect/dist/vue-treeselect";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin-top: 60px;
+
+  label {
+    display: block;
+  }
 }
 </style>

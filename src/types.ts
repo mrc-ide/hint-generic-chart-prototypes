@@ -67,7 +67,7 @@ export interface Filter {
     column_id: string,
     label: string,
     allowMultiple: boolean,
-    optionsSource: "data" | "config",
+    optionsSource: "data" | "config" | "shape",
     options: FilterOption[]
 }
 
@@ -95,4 +95,12 @@ export interface DataSourcePayload {
     chartIndex: number,
     dataSourceId: string,
     newValue: string
+}
+
+export interface DataSourceFilterOptionsPayload {
+    step: number,
+    tabId: string,
+    chartIndex: number,
+    dataSourceId: string,
+    newValue: Record<string, FilterOption[]>
 }

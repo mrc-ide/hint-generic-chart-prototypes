@@ -6,7 +6,8 @@ import {expandDatasetFilters, getChartDataForChart} from "@/store/genericCharts/
 export const getters = {
     chartData: (state: GenericChartsState, getters: any, rootState: RootState) => {
         const result = {slots: []} as ChartData;
-        state.config.slots.forEach(slotConfig => {
+        const expandedConfig: GenericChartsConfig = getters.expandedConfig;
+        expandedConfig.slots.forEach(slotConfig => {
             const stepNumber = slotConfig.stepNumber;
             const tabId = slotConfig.tabId;
             const slotSelections = state.selections.slots.find(s => s.stepNumber === stepNumber && s.tabId === tabId);
@@ -19,7 +20,7 @@ export const getters = {
         });
         return result;
     },
-    expandedConfig: (state: GenericChartsState, getters: any, rootState:RootState) => {
+    expandedConfig: (state: GenericChartsState, getters: any, rootState:RootState): GenericChartsConfig => {
         const result = {...state.config};
         result.slots.forEach(s => {
             const charts = s.charts.map(c => {
@@ -30,5 +31,6 @@ export const getters = {
             });
             s.charts = charts;
         });
+        return result;
     }
 };

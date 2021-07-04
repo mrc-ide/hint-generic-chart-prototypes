@@ -59,12 +59,45 @@ export const getChartDataForChart = (state: GenericChartsState, rootState: RootS
 
     const dataSources = {} as any;
     Object.keys(chartSelections.dataSources).forEach(dataSourceId => {
-        dataSources[dataSourceId] = datasets[chartSelections.dataSources[dataSourceId].datasetId]
+        const dsSelections = chartSelections.dataSources[dataSourceId];
+        const datasetId = dsSelections.datasetId;
+
+        const selectedFilterValues = dsSelections.selectedFilterOptions;
+
+        dataSources[dataSourceId] = {...datasets[datasetId]};
+
+        const filters = chartConfig.datasets.find(dsc => dsc.id === datasetId)!.filters;
+        if (filters && selectedFilterValues) {
+            const includeRow = (row: any, idx: number) => {
+                let filterOutRow = false;
+                for (const filter of filters) {
+                    const filterValues = selectedFilterValues[filter.id]?.map(n => n.id);
+                    if (filterValues?.indexOf(row[filter.column_id].toString()) < 0) {
+                        filterOutRow = true;
+                        break;
+                    }
+                }
+                if (idx < 3) {
+                    console.log(`Filtering row ${JSON.stringify(row)}`);
+
+
+                    for (const filter of filters) {
+                        const filterValues = selectedFilterValues[filter.id]?.map(n => n.id);
+                        console.log("filter Values: " + JSON.stringify(filterValues))
+                        console.log("row value:" + JSON.stringify(row[filter.column_id].toString()) )
+                    }
+
+                    console.log("include row is " + !filterOutRow);
+                }
+
+                return !filterOutRow;
+            };
+
+            dataSources[dataSourceId].data = dataSources[dataSourceId].data.filter((row: any, idx: number) => includeRow(row, idx));
+        }
 
         // If indicator Id is defined for the datasource, include 'value' column with that indicator's values
-        const dsSelections = chartSelections.dataSources[dataSourceId];
         if (dsSelections.indicatorId) {
-            console.log("Adding value column to item")
             dataSources[dataSourceId].data = dataSources[dataSourceId].data.map((item: any) => {
                 return {...item, value: item[dsSelections.indicatorId!]}
             });
@@ -103,15 +136,28 @@ export const expandDatasetFilters = (datasetConfig: DatasetConfig, rootState: Ro
   //Expand configured dataset filters to include filters from data if required
   const result: Filter[] = [];
   datasetConfig.filters?.forEach(f => {
-      if (f.optionsSource === "data") {
-          const dataset = getDatasetFromRootState(datasetConfig, rootState);
-          const filter = {
-              ...f,
-              options: dataset.filters[f.id]
-          };
-          result.push(filter);
-      } else {
-          result.push(f);
+      switch (f.optionsSource) {
+          case "data":
+              const dataset = getDatasetFromRootState(datasetConfig, rootState);
+              const filter = {
+                  ...f,
+                  options: dataset.filters[f.id]
+              };
+              result.push(filter);
+              break;
+          case "shape":
+              const shapeFilterOptions = [rootState.baseline.shape.filters.regions];
+              const shapeFilter = {
+                  ...f,
+                  options: shapeFilterOptions
+              };
+              result.push(shapeFilter);
+              break;
+          case "config":
+              result.push(f);
+              break;
+          default:
+              throw "Filter source not supported"
       }
   });
   return result;

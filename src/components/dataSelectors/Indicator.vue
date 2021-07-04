@@ -1,8 +1,8 @@
 <template>
-    <div class="row">
+    <div>
         <div class="form-group">
             <label class="font-weight-bold" for="indicator">Indicator</label>
-            <select v-model="selected" id="indicator">
+            <select v-model="selected" id="indicator" class="form-control">
                 <option v-for="i in indicators" :value="i.id">
                     {{i.label}}
                 </option>

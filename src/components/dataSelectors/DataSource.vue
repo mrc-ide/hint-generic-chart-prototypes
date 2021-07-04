@@ -1,8 +1,8 @@
 <template>
-    <div class="row">
+    <div>
         <div class="form-group">
             <label class="font-weight-bold" :for="`data-source-${config.id}`">{{config.label}}</label>
-            <select v-model="selected" :id="`data-source-${config.id}`">
+            <select v-model="selected" :id="`data-source-${config.id}`" class="form-control">
                 <option v-for="ds in datasets" :value="ds.id">
                     {{ds.label}}
                 </option>

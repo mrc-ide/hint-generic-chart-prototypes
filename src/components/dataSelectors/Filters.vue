@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h4 v-translate="'filters'"></h4>
+        <h4>Filters</h4>
         <div :id="'filter-' + filter.id" v-for="filter in filters" :key="filter.id" class="form-group">
             <filter-select :value="getSelectedFilterValues(filter.id)"
                            :multiple="filter.allowMultiple"
@@ -16,6 +16,7 @@
     import Vue from "vue";
     import FilterSelect from "./FilterSelect.vue";
     import {Filter, FilterOption} from "../../types";
+    import {flattenOptions} from "@/store/genericCharts/utils";
 
     interface Props {
         filters: Filter[],
@@ -25,6 +26,7 @@
     interface Methods {
         getSelectedFilterValues: (filterId: string) => string[],
         onFilterSelect: (filter: Filter, selectedOptions: FilterOption[]) => void
+        initialise: () => void
     }
 
     const props = {
@@ -50,16 +52,23 @@
 
                 this.$emit("update", newSelectedFilterOptions);
             },
-        },
-        created() {
-            //initialise selections
-            if (Object.keys(this.selectedFilterOptions).length < 1) {
+            initialise() {
+                //initialise selections - will have to do this if values change as well
                 const defaultSelected = this.filters.reduce((obj: any, current: Filter) => {
-                    obj[current.id] = [current.options[0]];
+                    obj[current.id] = Object.values(flattenOptions([current.options[0]]));
                     return obj;
                 }, {} as Record<string, FilterOption[]>);
                 this.$emit("update", defaultSelected);
-    }
+
+            }
+        },
+        created() {
+            this.initialise();
+        },
+        watch: {
+            filters() {
+                this.initialise();
+            }
         }
     });
 </script>
