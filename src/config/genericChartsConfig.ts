@@ -17,6 +17,9 @@
 
 // Default filter options are not implemented in the prototype - first options are selected
 
+// There may be multiple jsonata chart configurations per chart (which will expand to full Plotly chart configs when
+// data is available). When there are more than one, the user will be able to choose which to display from a drop-down.
+
 import {FilterOption, GenericChartsConfig} from "@/types";
 
 export const genericChartsSampleConfig : GenericChartsConfig = {
