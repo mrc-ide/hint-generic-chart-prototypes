@@ -91,7 +91,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             id: "scatter",
                             label: "Scatter",
                             config: `{
-                                "data":$map($filter(data.area_name, function($v, $i) {$i < 31}), function($v, $i) {
+                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 31}), function($v, $i) {
                                     {
                                         "name": $v,
                                         "showlegend": false,
@@ -111,7 +111,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             id: "bar",
                             label: "Bar",
                             config: `{
-                                "data":$map($filter(data.area_name, function($v, $i) {$i < 31}), function($v, $i) {
+                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 31}), function($v, $i) {
                                     {
                                         "name": $v,
                                         "showlegend": false,
