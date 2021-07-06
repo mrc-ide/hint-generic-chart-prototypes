@@ -20,9 +20,22 @@
                              @update="updateSelectedFilterOptions(chartIndex, ds.dataSourceId, $event)"
                     ></filters>
                 </div>
+                <div class="form-group">
+                    <label class="font-weight-bold" for="chart-style">Style</label>
+                    <select v-if="chart.chartConfigOptions.length > 0"
+                            id="chart-style"
+                            class="form-control"
+                            @change="updateChartConfigId(chartIndex, $event)"
+                    >
+                        <option v-for="chartConfig in chart.chartConfigOptions"
+                                :value="chartConfig.id">
+                            {{chartConfig.label}}
+                        </option>
+                    </select>
+                </div>
             </div>
             <div class="col-9">
-                {{JSON.stringify(chart.chartData)}}
+                <chart :chart-metadata="chart.config" :chart-data="chart.chartData.data"></chart>
             </div>
         </div>
     </div>
@@ -32,7 +45,8 @@
     import Vue from "vue";
     import {mapGetters, mapMutations, mapState} from "vuex";
     import {
-        ChartConfig, ChartData, ChartSelections, DatasetConfig,
+        ChartConfigPayload,
+        ChartData, DatasetConfig,
         DataSourceConfig, DataSourceFilterOptionsPayload,
         DataSourcePayload, DataSourceSelections, Filter, FilterOption,
         GenericChartsConfig,
@@ -42,6 +56,7 @@
     import DataSource from "./dataSelectors/DataSource.vue";
     import Indicator from "./dataSelectors/Indicator.vue";
     import Filters from "./dataSelectors/Filters.vue";
+    import Chart from "./Chart.vue";
     import {expandDatasetFilters, getChartFromSelections} from "@/store/genericCharts/utils";
 
     const namespace = "genericCharts";
@@ -50,6 +65,12 @@
         chartData: Record<string, any>
         dataSourceValues: DataSourceValues[]
         datasets: DatasetConfig[]
+        config: string
+        chartConfigOptions: {
+            id: string,
+            label: string,
+            config: string
+        }[]
     }
 
     interface DataSourceValues {
@@ -79,9 +100,11 @@
         setDataSource: (payload: DataSourcePayload) => void,
         setIndicator: (payload: DataSourcePayload) => void,
         setSelectedFilterOptions: (payload: DataSourceFilterOptionsPayload) => void
+        setChartConfigId: (payload: ChartConfigPayload) => void
         updateDataSource: (chartIndex: number, dataSourceId: string, newValue: string) => void,
         updateIndicator: (chartIndex: number, dataSourceId: string, newValue: string) => void
         updateSelectedFilterOptions: (chartIndex: number, dataSourceId: string, newValue: Record<string, FilterOption[]>) => void
+        updateChartConfigId: (chartIndex: number, event: Event) => void
     }
 
     export default Vue.extend<{}, Methods, Computed, Props>( {
@@ -93,7 +116,8 @@
         components: {
             DataSource,
             Indicator,
-            Filters
+            Filters,
+            Chart
         },
         computed: {
             ...mapState(namespace, ["selections"]),
@@ -107,6 +131,7 @@
             charts() {
                 return this.slotConfig.charts.map((c, idx) => {
                     const chartSelections = getChartFromSelections(this.selections, this.step, this.tabId, idx);
+
                     const chartData = this.slotChartData[idx];
                     const dataSourceValues: DataSourceValues[] = [];
 
@@ -131,31 +156,36 @@
                             expandedFilters
                         });
                     });
-                    console.log("Data sources values: " + JSON.stringify(dataSourceValues));
+
+                    const chartConfig = chartSelections.chartConfigId ? c.chartConfig.find(c => c.id === chartSelections.chartConfigId)!
+                                                                      : c.chartConfig[0];
+
                     return {
                         chartData,
                         dataSourceValues,
-                        datasets: c.datasets
+                        datasets: c.datasets,
+                        config: chartConfig.config,
+                        chartConfigOptions: c.chartConfig
                     }
                 });
             }
         },
         methods: {
-            ...mapMutations(namespace, ["setDataSource", "setIndicator", "setSelectedFilterOptions"]),
+            ...mapMutations(namespace, ["setDataSource", "setIndicator", "setSelectedFilterOptions", "setChartConfigId"]),
             updateDataSource(chartIndex, dataSourceId: string, newValue: string) {
                 this.setDataSource({step: this.step, tabId: this.tabId, chartIndex, dataSourceId, newValue});
             },
             updateIndicator(chartIndex: number, dataSourceId: string, newValue: string) {
-                console.log("updatig ind in ChartSlot")
                 this.setIndicator({step: this.step, tabId: this.tabId, chartIndex, dataSourceId, newValue});
             },
             updateSelectedFilterOptions(chartIndex: number, dataSourceId: string, newValue: Record<string, FilterOption[]>) {
                 this.setSelectedFilterOptions({step: this.step, tabId: this.tabId, chartIndex, dataSourceId, newValue});
+            },
+            updateChartConfigId(chartIndex: number, event: Event) {
+                const newValue = (event.target as HTMLSelectElement).value;
+                this.setChartConfigId({step: this.step, tabId: this.tabId, chartIndex, chartConfigId: newValue});
             }
         }
     })
 </script>
 
-<style scoped>
-
-</style>

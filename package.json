@@ -7,12 +7,16 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.0.0-rc.8",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
+    "jsonata": "^1.8.4",
+    "plotly.js": "^1.58.4",
     "vue": "^2.6.11",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@types/plotly.js": "^1.54.10",
     "@riophae/vue-treeselect": "^0.3.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",

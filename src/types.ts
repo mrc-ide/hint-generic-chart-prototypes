@@ -14,7 +14,12 @@ export interface ChartConfig
     datasets: DatasetConfig[],
     dataSelectors: {
         dataSources: DataSourceConfig[]
-    }
+    },
+    chartConfig: {
+       id: string,
+       label: string,
+       config: string
+    }[]
 }
 
 export interface DatasetConfig {
@@ -72,6 +77,7 @@ export interface Filter {
 }
 
 export interface ChartSelections {
+    chartConfigId: string | null,
     dataSources: Record<string, DataSourceSelections>
 }
 
@@ -103,4 +109,11 @@ export interface DataSourceFilterOptionsPayload {
     chartIndex: number,
     dataSourceId: string,
     newValue: Record<string, FilterOption[]>
+}
+
+export interface ChartConfigPayload {
+    step: number,
+    tabId: string,
+    chartIndex: number,
+    chartConfigId: string
 }

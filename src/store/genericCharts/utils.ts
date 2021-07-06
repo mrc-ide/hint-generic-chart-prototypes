@@ -21,7 +21,10 @@ export const initialiseSelections = (config: GenericChartsConfig) => {
                     selectedFilterOptions: undefined
                 }
             });
-            return {dataSources};
+            return {
+                dataSources,
+                chartConfigId: ""
+            };
         });
 
         result.slots.push({
@@ -76,18 +79,6 @@ export const getChartDataForChart = (state: GenericChartsState, rootState: RootS
                         filterOutRow = true;
                         break;
                     }
-                }
-                if (idx < 3) {
-                    console.log(`Filtering row ${JSON.stringify(row)}`);
-
-
-                    for (const filter of filters) {
-                        const filterValues = selectedFilterValues[filter.id]?.map(n => n.id);
-                        console.log("filter Values: " + JSON.stringify(filterValues))
-                        console.log("row value:" + JSON.stringify(row[filter.column_id].toString()) )
-                    }
-
-                    console.log("include row is " + !filterOutRow);
                 }
 
                 return !filterOutRow;

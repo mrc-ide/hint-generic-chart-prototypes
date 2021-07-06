@@ -52,7 +52,6 @@
             initialise() {
                 //If no indicator is selected, pre-select the first one
                 if (!this.value) {
-                    console.log("updatting indicator from Indicator comp to " + this.indicators[0].id)
                     this.$emit('update', this.indicators[0].id)
                 }
             }
@@ -62,13 +61,9 @@
         },
         watch: {
             value(newVal) {
-                console.log("Indicator value was updated back in comp to " + newVal)
                 this.initialise();
             }
         }
     });
 </script>
 
-<style scoped>
-
-</style>

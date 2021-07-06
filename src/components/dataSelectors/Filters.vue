@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h4>Filters</h4>
         <div :id="'filter-' + filter.id" v-for="filter in filters" :key="filter.id" class="form-group">
             <filter-select :value="getSelectedFilterValues(filter.id)"
                            :multiple="filter.allowMultiple"
