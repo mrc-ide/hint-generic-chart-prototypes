@@ -91,14 +91,14 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             id: "scatter",
                             label: "Scatter",
                             config: `{
-                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 31}), function($v, $i) {
+                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 30}), function($v, $i) {
                                     {
                                         "name": $v,
                                         "showlegend": false,
                                         "x": data[area_name=$v].year,
                                         "y": data[area_name=$v].value,
-                                        "xaxis": 'x' & $i,
-                                        "yaxis": 'y' & $i,
+                                        "xaxis": 'x' & ($i+1),
+                                        "yaxis": 'y' & ($i+1),
                                         "type": "scatter"
                                     }
                                 }),
@@ -111,14 +111,14 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             id: "bar",
                             label: "Bar",
                             config: `{
-                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 31}), function($v, $i) {
+                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 30}), function($v, $i) {
                                     {
                                         "name": $v,
                                         "showlegend": false,
                                         "x": data[area_name=$v].year,
                                         "y": data[area_name=$v].value,
-                                        "xaxis": 'x' & $i,
-                                        "yaxis": 'y' & $i,
+                                        "xaxis": 'x' & ($i+1),
+                                        "yaxis": 'y' & ($i+1),
                                         "type": "bar"
                                     }
                                 }),
