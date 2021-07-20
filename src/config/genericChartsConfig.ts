@@ -110,7 +110,10 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                             "showlegend": false,
                                             "x": data[area_name=$v].year,
                                             "y": $map(data[area_name=$v].value, function($thv, $thi) {
-                                                    $thv > 20000 or ($i > 0 and data[area_name=$v].value[i-1] > 20000)? $thv : null
+                                                   (($thi > 0) and $thv > (1.25 * (data[area_name=$v].value)[$thi-1])) 
+                                                   or 
+                                                   (($thi < $count(data[area_name=$v].value)-1) and (data[area_name=$v].value)[$thi+1] > (1.25 * $thv)) 
+                                                   ? $thv : null
                                                 }),
                                             "xaxis": 'x' & ($i+1),
                                             "yaxis": 'y' & ($i+1),
