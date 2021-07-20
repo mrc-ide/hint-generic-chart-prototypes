@@ -92,16 +92,35 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             label: "Scatter",
                             config: `{
                                 "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 30}), function($v, $i) {
-                                    {
-                                        "name": $v,
-                                        "showlegend": false,
-                                        "x": data[area_name=$v].year,
-                                        "y": data[area_name=$v].value,
-                                        "xaxis": 'x' & ($i+1),
-                                        "yaxis": 'y' & ($i+1),
-                                        "type": "scatter"
-                                    }
-                                }),
+                                    [
+                                        {
+                                            "name": $v,
+                                            "showlegend": false,
+                                            "x": data[area_name=$v].year,
+                                            "y": data[area_name=$v].value,
+                                            "xaxis": 'x' & ($i+1),
+                                            "yaxis": 'y' & ($i+1),
+                                            "type": "scatter",
+                                            "line": {
+                                                "color": "rgb(51, 51, 51)"
+                                            }
+                                        },
+                                        {
+                                            "name": $v,
+                                            "showlegend": false,
+                                            "x": data[area_name=$v].year,
+                                            "y": $map(data[area_name=$v].value, function($thv, $thi) {
+                                                    $thv > 20000 or ($i > 0 and data[area_name=$v].value[i-1] > 20000)? $thv : null
+                                                }),
+                                            "xaxis": 'x' & ($i+1),
+                                            "yaxis": 'y' & ($i+1),
+                                            "type": "scatter",
+                                            "line": {
+                                                "color": "rgb(255, 51, 51)"
+                                            }
+                                        }
+                                    ]    
+                                }).*,
                                 "layout": {                            
                                     "grid": {"columns": 3, "rows": 10, "pattern": 'independent'}
                                 }
@@ -119,7 +138,10 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                         "y": data[area_name=$v].value,
                                         "xaxis": 'x' & ($i+1),
                                         "yaxis": 'y' & ($i+1),
-                                        "type": "bar"
+                                        "type": "bar",
+                                        "marker": {
+                                            "color": "rgb(51, 51, 51)"
+                                        }
                                     }
                                 }),
                                 "layout": {                            
