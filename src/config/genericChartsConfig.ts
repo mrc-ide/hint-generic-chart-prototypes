@@ -88,7 +88,8 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                     },
                     subplots: {
                         columns: 3,
-                        distinctColumn: "area_name"
+                        distinctColumn: "area_name",
+                        heightPerRow: 100
                     },
                     chartConfig: [
                         {

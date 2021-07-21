@@ -35,7 +35,13 @@
                 </div>
             </div>
             <div class="col-9">
-                <chart :chart-metadata="chart.config" :chart-data="chart.chartData.data" :layout-data="chart.layoutData"></chart>
+                <div class="chart-container" :style="{height: chartHeight}">
+                    <chart class="chart"
+                           :chart-metadata="chart.config"
+                           :chart-data="chart.chartData.data"
+                           :layout-data="chart.layoutData"
+                           :style="{height: chart.scrollHeight}"></chart>
+                </div>
             </div>
         </div>
     </div>
@@ -67,6 +73,7 @@
         dataSourceValues: DataSourceValues[]
         datasets: DatasetConfig[]
         config: string
+        scrollHeight: string
         chartConfigOptions: {
             id: string,
             label: string,
@@ -85,7 +92,8 @@
 
     interface Props {
         step: number,
-        tabId: string
+        tabId: string,
+        chartHeight: string
     }
 
     interface Computed {
@@ -112,7 +120,8 @@
         name: "ChartSlot",
         props: {
             step: {type: Number},
-            tabId: {type: String}
+            tabId: {type: String},
+            chartHeight: {type: String}
         },
         components: {
             DataSource,
@@ -163,9 +172,9 @@
 
                     //Sort out layout issues around subplots - provide additional metadata to jsonata (rows and columns)
                     //and define scroll height
-                    //TODO: Move to its own method?
                     console.log("ChartData in ChartSlot: " + JSON.stringify(chartData))
                     const layoutData = {} as any;
+                    let scrollHeight = "100*"
                     if (c.subplots) {
                         const numberOfPlots = [...new Set(chartData.data.data.map((row: any) => row[c.subplots!!.distinctColumn]))].length;
 
@@ -177,6 +186,8 @@
                             ...c.subplots,
                             rows
                         }
+
+                        scrollHeight = `${c.subplots.heightPerRow * rows}px`;
                     }
 
                     return {
@@ -185,6 +196,7 @@
                         dataSourceValues,
                         datasets: c.datasets,
                         config: chartConfig.config,
+                        scrollHeight,
                         chartConfigOptions: c.chartConfig
                     }
                 });
@@ -209,3 +221,13 @@
     })
 </script>
 
+<style lang="scss">
+    .chart-container {
+        overflow-y: scroll;
+        width: 100%;
+    }
+
+    .chart {
+        width: 100%;
+    }
+</style>

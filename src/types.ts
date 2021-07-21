@@ -17,7 +17,8 @@ export interface ChartConfig
     },
     subplots?: {
         columns: number,
-        distinctColumn: string
+        distinctColumn: string,
+        heightPerRow: number
     },
     chartConfig: {
        id: string,
