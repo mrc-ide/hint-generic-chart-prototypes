@@ -230,4 +230,16 @@
     .chart {
         width: 100%;
     }
+
+    .annotation-text {
+        font-weight: bold;
+    }
+
+    .ytick text{
+        fill: #777;
+    }
+
+    .xtick text{
+        fill: #777;
+    }
 </style>
