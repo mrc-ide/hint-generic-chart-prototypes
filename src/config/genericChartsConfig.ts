@@ -105,14 +105,17 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                                 "color": "rgb(51, 51, 51)"
                                             }
                                         },
-                                        {
-                                            "name": $v,
+                                        {                                        
                                             "showlegend": false,
                                             "x": data[area_name=$v].year,
                                             "y": $map(data[area_name=$v].value, function($thv, $thi) {
                                                    (($thi > 0) and $thv > (1.25 * (data[area_name=$v].value)[$thi-1])) 
                                                    or 
                                                    (($thi < $count(data[area_name=$v].value)-1) and (data[area_name=$v].value)[$thi+1] > (1.25 * $thv)) 
+                                                   or
+                                                   (($thi > 0) and $thv < (0.75 * (data[area_name=$v].value)[$thi-1])) 
+                                                   or 
+                                                   (($thi < $count(data[area_name=$v].value)-1) and (data[area_name=$v].value)[$thi+1] < (0.75 * $thv))
                                                    ? $thv : null
                                                 }),
                                             "xaxis": 'x' & ($i+1),
@@ -120,7 +123,8 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                             "type": "scatter",
                                             "line": {
                                                 "color": "rgb(255, 51, 51)"
-                                            }
+                                            },
+                                            "hoverinfo": "none"
                                         }
                                     ]    
                                 }).*,
