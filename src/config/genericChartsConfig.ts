@@ -20,7 +20,7 @@
 // There may be multiple jsonata chart configurations per chart (which will expand to full Plotly chart configs when
 // data is available). When there are more than one, the user will be able to choose which to display from a drop-down.
 
-import {FilterOption, GenericChartsConfig} from "@/types";
+import {GenericChartsConfig} from "@/types";
 
 export const genericChartsSampleConfig : GenericChartsConfig = {
     slots: [
@@ -86,12 +86,16 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             }
                         ]
                     },
+                    subplots: {
+                        columns: 3,
+                        distinctColumn: "area_name"
+                    },
                     chartConfig: [
                         {
                             id: "scatter",
                             label: "Scatter",
                             config: `{
-                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 30}), function($v, $i) {
+                                "data":$map($distinct(data.area_name), function($v, $i) {
                                     [
                                         {
                                             "name": $v,
@@ -129,7 +133,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                     ]    
                                 }).*,
                                 "layout": {                            
-                                    "grid": {"columns": 3, "rows": 10, "pattern": 'independent'}
+                                    "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'}
                                 }
                             }`
                         },
@@ -137,7 +141,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             id: "bar",
                             label: "Bar",
                             config: `{
-                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 30}), function($v, $i) {
+                                "data":$map($distinct(data.area_name), function($v, $i) {
                                     {
                                         "name": $v,
                                         "showlegend": false,
@@ -152,7 +156,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                     }
                                 }),
                                 "layout": {                            
-                                    "grid": {"columns": 3, "rows": 10, "pattern": 'independent'}
+                                    "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'}
                                 }
                             }`
                         }

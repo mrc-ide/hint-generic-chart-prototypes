@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="col-9">
-                <chart :chart-metadata="chart.config" :chart-data="chart.chartData.data"></chart>
+                <chart :chart-metadata="chart.config" :chart-data="chart.chartData.data" :layout-data="chart.layoutData"></chart>
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@
 
     interface ChartValues {
         chartData: Record<string, any>
+        layoutData: Record<string, any>
         dataSourceValues: DataSourceValues[]
         datasets: DatasetConfig[]
         config: string
@@ -160,8 +161,27 @@
                     const chartConfig = chartSelections.chartConfigId ? c.chartConfig.find(c => c.id === chartSelections.chartConfigId)!
                                                                       : c.chartConfig[0];
 
+                    //Sort out layout issues around subplots - provide additional metadata to jsonata (rows and columns)
+                    //and define scroll height
+                    //TODO: Move to its own method?
+                    console.log("ChartData in ChartSlot: " + JSON.stringify(chartData))
+                    const layoutData = {} as any;
+                    if (c.subplots) {
+                        const numberOfPlots = [...new Set(chartData.data.data.map((row: any) => row[c.subplots!!.distinctColumn]))].length;
+
+                        console.log("number of plots: " + numberOfPlots)
+
+                        const rows = Math.ceil(numberOfPlots / c.subplots.columns);
+
+                        layoutData.subplots = {
+                            ...c.subplots,
+                            rows
+                        }
+                    }
+
                     return {
                         chartData,
+                        layoutData,
                         dataSourceValues,
                         datasets: c.datasets,
                         config: chartConfig.config,

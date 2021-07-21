@@ -40,7 +40,7 @@
             });
             function drawChart() {
                 const el = chart.value as unknown;
-                console.log("chart data: " + JSON.stringify(data.value.data))
+                console.log("chart input data: " + JSON.stringify(inputData.value))
                 Plotly.react(el as HTMLElement, data.value.data, data.value.layout);
             }
             onMounted(() => {
