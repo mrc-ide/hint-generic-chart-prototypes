@@ -95,14 +95,17 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                         {
                             id: "scatter",
                             label: "Scatter",
-                            config: `{
-                                "data":$map($distinct(data.area_name), function($v, $i) {
+                            config: `(
+                            $areaNames := $distinct(data.area_name);
+                            {
+                                "data":$map($areaNames, function($v, $i) {(
+                                    $areaData := data[area_name=$v];
                                     [
                                         {
                                             "name": $v,
                                             "showlegend": false,
-                                            "x": data[area_name=$v].year,
-                                            "y": data[area_name=$v].value,
+                                            "x": $areaData.year,
+                                            "y": $areaData.value,
                                             "xaxis": 'x' & ($i+1),
                                             "yaxis": 'y' & ($i+1),
                                             "type": "scatter",
@@ -114,15 +117,15 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                             "showlegend": false,
                                             "x": data[area_name=$v].year,
                                             "y": $map(data[area_name=$v].value, function($thv, $thi) {
-                                                   (($thi > 0) and $thv > (1.25 * (data[area_name=$v].value)[$thi-1])) 
+                                                   (($thi > 0) and $thv > (1.25 * ($areaData.value)[$thi-1])) 
                                                    or 
-                                                   (($thi < $count(data[area_name=$v].value)-1) and (data[area_name=$v].value)[$thi+1] > (1.25 * $thv)) 
+                                                   (($thi < $count($areaData.value)-1) and ($areaData.value)[$thi+1] > (1.25 * $thv)) 
                                                    or
-                                                   (($thi > 0) and $thv < (0.75 * (data[area_name=$v].value)[$thi-1])) 
+                                                   (($thi > 0) and $thv < (0.75 * ($areaData.value)[$thi-1])) 
                                                    or 
-                                                   (($thi < $count(data[area_name=$v].value)-1) and (data[area_name=$v].value)[$thi+1] < (0.75 * $thv))
+                                                   (($thi < $count($areaData.value)-1) and ($areaData.value)[$thi+1] < (0.75 * $thv))
                                                    ? $thv : null
-                                                }),
+                                             }),
                                             "xaxis": 'x' & ($i+1),
                                             "yaxis": 'y' & ($i+1),
                                             "type": "scatter",
@@ -132,11 +135,11 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                             "hoverinfo": "none"
                                         }
                                     ]    
-                                }).*,
+                                )}).*,
                                 "layout": $merge([
                                     {                            
                                         "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'},
-                                        "annotations": $map($distinct(data.area_name), function($v, $i) {
+                                        "annotations": $map($areaNames, function($v, $i) {
                                             {
                                                 "text": $v & " (" & (data[area_name=$v].area_id)[0] & ")",
                                                 "textfont": {},
@@ -150,7 +153,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                             }
                                         })    
                                     },
-                                    [1..$count($distinct(data.area_name))]{
+                                    [1..$count($areaNames)]{
                                         "yaxis"&$: {
                                             "rangemode": "tozero",
                                             "zeroline": false,
@@ -165,7 +168,7 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                         } 
                                     }
                                 ])
-                            }`
+                            })`
                         },
                         {
                             id: "bar",

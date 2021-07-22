@@ -172,14 +172,10 @@
 
                     //Sort out layout issues around subplots - provide additional metadata to jsonata (rows and columns)
                     //and define scroll height
-                    console.log("ChartData in ChartSlot: " + JSON.stringify(chartData))
                     const layoutData = {} as any;
                     let scrollHeight = "100*"
                     if (c.subplots) {
                         const numberOfPlots = [...new Set(chartData.data.data.map((row: any) => row[c.subplots!!.distinctColumn]))].length;
-
-                        console.log("number of plots: " + numberOfPlots)
-
                         const rows = Math.ceil(numberOfPlots / c.subplots.columns);
 
                         layoutData.subplots = {

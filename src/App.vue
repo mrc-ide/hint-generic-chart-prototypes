@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <ChartSlot :step="1" tab-id="timeSeries" chart-height="500px"></ChartSlot>
+    <ChartSlot :step="1" tab-id="timeSeries" chart-height="700px"></ChartSlot>
   </div>
 </template>
 
