@@ -173,7 +173,7 @@
                     //Sort out layout issues around subplots - provide additional metadata to jsonata (rows and columns)
                     //and define scroll height
                     const layoutData = {} as any;
-                    let scrollHeight = "100*"
+                    let scrollHeight = "100%"
                     if (c.subplots) {
                         const numberOfPlots = [...new Set(chartData.data.data.map((row: any) => row[c.subplots!!.distinctColumn]))].length;
                         const rows = Math.ceil(numberOfPlots / c.subplots.columns);
@@ -229,13 +229,5 @@
 
     .annotation-text {
         font-weight: bold;
-    }
-
-    .ytick text{
-        fill: #777;
-    }
-
-    .xtick text{
-        fill: #777;
     }
 </style>
