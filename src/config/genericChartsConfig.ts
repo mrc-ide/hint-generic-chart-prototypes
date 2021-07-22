@@ -133,22 +133,38 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                         }
                                     ]    
                                 }).*,
-                                "layout": {                            
-                                    "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'},
-                                    "annotations": $map($distinct(data.area_name), function($v, $i) {
-                                        {
-                                          "text": $v & " (" & (data[area_name=$v].area_id)[0] & ")",
-                                          "textfont": {},
-                                          "showarrow": false,
-                                          "x": 0.5,
-                                          "xanchor": "middle",
-                                          "xref": "x" & ($i+1) & " domain",
-                                          "y": 1,
-                                          "yanchor": "middle",
-                                          "yref": "y" & ($i+1) & " domain"
-                                        }
-                                    })    
-                                }
+                                "layout": $merge([
+                                    {                            
+                                        "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'},
+                                        "annotations": $map($distinct(data.area_name), function($v, $i) {
+                                            {
+                                                "text": $v & " (" & (data[area_name=$v].area_id)[0] & ")",
+                                                "textfont": {},
+                                                "showarrow": false,
+                                                "x": 0.5,
+                                                "xanchor": "middle",
+                                                "xref": "x" & ($i+1) & " domain",
+                                                "y": 1,
+                                                "yanchor": "middle",
+                                                "yref": "y" & ($i+1) & " domain"
+                                            }
+                                        })    
+                                    },
+                                    [1..$count($distinct(data.area_name))]{
+                                        "yaxis"&$: {
+                                            "rangemode": "tozero",
+                                            "zeroline": false,
+                                            "tickfont": {
+                                                "color": "grey"
+                                            }
+                                        },
+                                        "xaxis"&$: {
+                                            "tickfont": {
+                                                "color": "grey"
+                                            }
+                                        } 
+                                    }
+                                ])
                             }`
                         },
                         {
