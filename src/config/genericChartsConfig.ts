@@ -136,9 +136,10 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                                         }
                                     ]    
                                 )}).*,
+                                "config": {"responsive": true},
                                 "layout": $merge([
                                     {                            
-                                        "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'},
+                                        "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'},                                     
                                         "annotations": $map($areaNames, function($v, $i) {
                                             {
                                                 "text": $v & " (" & (data[area_name=$v].area_id)[0] & ")",

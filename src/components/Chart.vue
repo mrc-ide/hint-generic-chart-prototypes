@@ -40,7 +40,7 @@
             });
             function drawChart() {
                 const el = chart.value as unknown;
-                Plotly.react(el as HTMLElement, data.value.data, data.value.layout);
+                Plotly.react(el as HTMLElement, data.value.data, data.value.layout, data.value.config);
             }
             onMounted(() => {
                 drawChart();
