@@ -15,6 +15,11 @@ export interface ChartConfig
     dataSelectors: {
         dataSources: DataSourceConfig[]
     },
+    subplots?: {
+        columns: number,
+        distinctColumn: string,
+        heightPerRow: number
+    },
     chartConfig: {
        id: string,
        label: string,

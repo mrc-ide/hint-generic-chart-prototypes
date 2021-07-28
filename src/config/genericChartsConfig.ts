@@ -20,7 +20,7 @@
 // There may be multiple jsonata chart configurations per chart (which will expand to full Plotly chart configs when
 // data is available). When there are more than one, the user will be able to choose which to display from a drop-down.
 
-import {FilterOption, GenericChartsConfig} from "@/types";
+import {GenericChartsConfig} from "@/types";
 
 export const genericChartsSampleConfig : GenericChartsConfig = {
     slots: [
@@ -86,44 +86,111 @@ export const genericChartsSampleConfig : GenericChartsConfig = {
                             }
                         ]
                     },
+                    subplots: {
+                        columns: 3,
+                        distinctColumn: "area_name",
+                        heightPerRow: 100
+                    },
                     chartConfig: [
                         {
                             id: "scatter",
                             label: "Scatter",
-                            config: `{
-                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 31}), function($v, $i) {
-                                    {
-                                        "name": $v,
-                                        "showlegend": false,
-                                        "x": data[area_name=$v].year,
-                                        "y": data[area_name=$v].value,
-                                        "xaxis": 'x' & $i,
-                                        "yaxis": 'y' & $i,
-                                        "type": "scatter"
+                            config: `(
+                            $areaNames := $distinct(data.area_name);
+                            {
+                                "data":$map($areaNames, function($v, $i) {(
+                                    $areaData := data[area_name=$v];
+                                    [
+                                        {
+                                            "name": $v,
+                                            "showlegend": false,
+                                            "x": $areaData.year,
+                                            "y": $areaData.value,
+                                            "xaxis": 'x' & ($i+1),
+                                            "yaxis": 'y' & ($i+1),
+                                            "type": "scatter",
+                                            "line": {
+                                                "color": "rgb(51, 51, 51)"
+                                            }
+                                        },
+                                        {                                        
+                                            "showlegend": false,
+                                            "x": data[area_name=$v].year,
+                                            "y": $map(data[area_name=$v].value, function($thv, $thi) {
+                                                   (($thi > 0) and $thv > (1.25 * ($areaData.value)[$thi-1])) 
+                                                   or 
+                                                   (($thi < $count($areaData.value)-1) and ($areaData.value)[$thi+1] > (1.25 * $thv)) 
+                                                   or
+                                                   (($thi > 0) and $thv < (0.75 * ($areaData.value)[$thi-1])) 
+                                                   or 
+                                                   (($thi < $count($areaData.value)-1) and ($areaData.value)[$thi+1] < (0.75 * $thv))
+                                                   ? $thv : null
+                                             }),
+                                            "xaxis": 'x' & ($i+1),
+                                            "yaxis": 'y' & ($i+1),
+                                            "type": "scatter",
+                                            "line": {
+                                                "color": "rgb(255, 51, 51)"
+                                            },
+                                            "hoverinfo": "none"
+                                        }
+                                    ]    
+                                )}).*,
+                                "config": {"responsive": true},
+                                "layout": $merge([
+                                    {                            
+                                        "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'},                                     
+                                        "annotations": $map($areaNames, function($v, $i) {
+                                            {
+                                                "text": $v & " (" & (data[area_name=$v].area_id)[0] & ")",
+                                                "textfont": {},
+                                                "showarrow": false,
+                                                "x": 0.5,
+                                                "xanchor": "middle",
+                                                "xref": "x" & ($i+1) & " domain",
+                                                "y": 1,
+                                                "yanchor": "middle",
+                                                "yref": "y" & ($i+1) & " domain"
+                                            }
+                                        })    
+                                    },
+                                    [1..$count($areaNames)]{
+                                        "yaxis"&$: {
+                                            "rangemode": "tozero",
+                                            "zeroline": false,
+                                            "tickfont": {
+                                                "color": "grey"
+                                            }
+                                        },
+                                        "xaxis"&$: {
+                                            "tickfont": {
+                                                "color": "grey"
+                                            }
+                                        } 
                                     }
-                                }),
-                                "layout": {                            
-                                    "grid": {"columns": 3, "rows": 10, "pattern": 'independent'}
-                                }
-                            }`
+                                ])
+                            })`
                         },
                         {
                             id: "bar",
                             label: "Bar",
                             config: `{
-                                "data":$map($filter($distinct(data.area_name), function($v, $i) {$i < 31}), function($v, $i) {
+                                "data":$map($distinct(data.area_name), function($v, $i) {
                                     {
                                         "name": $v,
                                         "showlegend": false,
                                         "x": data[area_name=$v].year,
                                         "y": data[area_name=$v].value,
-                                        "xaxis": 'x' & $i,
-                                        "yaxis": 'y' & $i,
-                                        "type": "bar"
+                                        "xaxis": 'x' & ($i+1),
+                                        "yaxis": 'y' & ($i+1),
+                                        "type": "bar",
+                                        "marker": {
+                                            "color": "rgb(51, 51, 51)"
+                                        }
                                     }
                                 }),
                                 "layout": {                            
-                                    "grid": {"columns": 3, "rows": 10, "pattern": 'independent'}
+                                    "grid": {"columns": subplots.columns, "rows": subplots.rows, "pattern": 'independent'}
                                 }
                             }`
                         }

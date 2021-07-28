@@ -1,6 +1,6 @@
 <template>
     <div>
-    <div ref="chart" style="width:800px; height:1000px;"></div>
+    <div ref="chart" style="width:100%; height:100%;"></div>
     </div>
 </template>
 
@@ -40,7 +40,7 @@
             });
             function drawChart() {
                 const el = chart.value as unknown;
-                Plotly.react(el as HTMLElement, data.value.data, data.value.layout);
+                Plotly.react(el as HTMLElement, data.value.data, data.value.layout, data.value.config);
             }
             onMounted(() => {
                 drawChart();
